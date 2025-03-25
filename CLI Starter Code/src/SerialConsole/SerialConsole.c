@@ -146,13 +146,77 @@ void setLogLevel(enum eDebugLogLevels debugLevel)
     currentDebugLevel = debugLevel;
 }
 
+/**************************************************************************/
 /**
  * @brief Logs a message at the specified debug level.
+ * 
+ * @param[in] level The debug level of the message
+ *                  Determines if the message will be printed based on 
+ *                  the current log level threshold.
+ * @param[in] format Formatted string to be printed
+ * @param[in] ... Variable arguments for the format string
+ * 
+ * @return void
+ * 
+ * @note Uses vsprintf to handle variable arguments
+ * @warning Be cautious of buffer sizes to prevent buffer overflows
+ * 
+ * @code
+ *   // Set logging to only show ERROR and above
+ *   setLogLevel(LOG_ERROR_LVL);
+ *   
+ *   // This will NOT print
+ *   LogMessage(LOG_INFO_LVL, "Performing Temperature Test...\r\n");
+ *   
+ *   // These WILL print
+ *   LogMessage(LOG_ERROR_LVL, "System error: %s\r\n", errorMessage);
+ *   LogMessage(LOG_FATAL_LVL, "Critical failure: %d degrees!\r\n", temperature);
+ * @endcode
  */
 void LogMessage(enum eDebugLogLevels level, const char *format, ...)
 {
-    // Todo: Implement Debug Logger
-	// More detailed descriptions are in header file
+    // Check if the log level is valid and meets or exceeds the current debug level
+    if (level >= getLogLevel() && level < N_DEBUG_LEVELS)
+    {
+	    /** 
+		 * @var char levelPrefix[]
+		 * @brief Prefix strings for different log levels
+		 * @details Provides human-readable prefixes for each log level to help 
+		 *          distinguish message types in log output.
+		*/
+	    const char *levelPrefix[] = {
+		    "[INFO] ",    /**< Prefix for informational messages */
+		    "[DEBUG] ",   /**< Prefix for debug messages */
+		    "[WARNING] ", /**< Prefix for warning messages */
+		    "[ERROR] ",   /**< Prefix for error messages */
+		    "[FATAL] ",   /**< Prefix for fatal error messages */
+		    ""            /**< Empty prefix when logging is off */
+	    };
+
+	    // Buffer to hold the formatted message
+	    char logBuffer[512];
+	    
+	    // Buffer to hold the full message with prefix
+	    char fullMessageBuffer[600];
+
+	    // Create a va_list to handle variable arguments
+	    va_list args;
+	    va_start(args, format);
+
+	    // Format the message using vsprintf
+	    // Note: Be careful with buffer sizes to prevent buffer overflows
+	    vsnprintf(logBuffer, sizeof(logBuffer), format, args);
+
+	    // Clean up the va_list
+	    va_end(args);
+
+	    // Combine the level prefix with the formatted message
+	    snprintf(fullMessageBuffer, sizeof(fullMessageBuffer), "%s%s",
+	    levelPrefix[level], logBuffer);
+
+	    // Write the full message to the serial console
+	    SerialConsoleWriteString(fullMessageBuffer);
+    }
 }
 
 /*
