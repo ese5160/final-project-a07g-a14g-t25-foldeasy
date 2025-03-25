@@ -200,3 +200,74 @@ Ground
 **4. Submit a small capture file (i.e., the .sal file) of a wiretapped conversation.**
 
 [text](<A07G_Docs/Session 0.sal>)
+
+
+# 5. Complete the CLI
+
+```c
+// SerialConsole.h
+
+ #include "FreeRTOS.h"
+ #include "semphr.h"
+
+ extern SemaphoreHandle_t rxDataAvailableSemaphore;
+ ```
+
+```c
+// SerialConsole.c
+SemaphoreHandle_t rxDataAvailableSemaphore = NULL;
+void usart_read_callback(struct usart_module *const usart_module)
+{
+	    // Put the latest received character into the circular buffer
+	    circular_buf_put(cbufRx, latestRx);
+
+	    // Give the semaphore to signal that data is available
+	    if (rxDataAvailableSemaphore != NULL)
+	    {
+		    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+		    xSemaphoreGiveFromISR(rxDataAvailableSemaphore, &xHigherPriorityTaskWoken);
+		    
+		    // If a higher priority task was woken, request a context switch
+		    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	    }
+
+	    // Kick off another read job to continuously receive characters
+	    usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);
+}
+```
+
+```c
+// CliThread.c 
+static void FreeRTOS_read(char *character)
+{
+	 // If semaphore hasn't been created, create it
+	 if (rxDataAvailableSemaphore == NULL)
+	 {
+		 rxDataAvailableSemaphore = xSemaphoreCreateBinary();
+	 }
+
+	 // Wait indefinitely for a character to be available
+	 if (xSemaphoreTake(rxDataAvailableSemaphore, portMAX_DELAY) == pdTRUE)
+	 {
+		 // Retrieve the character from the circular buffer
+		 int result = SerialConsoleReadCharacter((uint8_t *)character);
+		 
+		 // Ensure a character was successfully retrieved
+		 if (result == -1)
+		 {
+			 // No character available, this shouldn't happen if semaphore worked correctly
+			 *character = '\0';
+		 }
+	 }
+}
+```
+
+# 6. Add CLI commands
+
+**1. Commit your functioning CLI code to your GitHub repo and make comments that are in Doxygen style.**
+
+[CLI Commands](<CLI Starter Code/src/CliThread/CliThread.c>)
+
+**2. Submit a link to a video of this functionality in your README.md**
+
+https://drive.google.com/file/d/132HlBVISEmbh2Mz9M1WWnCoypATKykbY/view?usp=sharing

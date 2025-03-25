@@ -33,6 +33,10 @@
  #include <string.h>
  #include <stdarg.h>
  #include "circular_buffer.h"
+ #include "FreeRTOS.h"
+ #include "semphr.h"
+
+ extern SemaphoreHandle_t rxDataAvailableSemaphore;
  
  /******************************************************************************
   * Enumerations

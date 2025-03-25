@@ -27,6 +27,7 @@
  * Includes
  ******************************************************************************/
 #include "SerialConsole.h"
+#include "CliThread.h"
 
 /******************************************************************************
  * Defines
@@ -62,6 +63,8 @@ struct usart_module usart_instance;
 char rxCharacterBuffer[RX_BUFFER_SIZE]; 			   ///< Buffer to store received characters
 char txCharacterBuffer[TX_BUFFER_SIZE]; 			   ///< Buffer to store characters to be sent
 enum eDebugLogLevels currentDebugLevel = LOG_INFO_LVL; ///< Default debug level
+SemaphoreHandle_t rxDataAvailableSemaphore = NULL;
+
 
 /******************************************************************************
  * Global Functions
@@ -277,14 +280,29 @@ static void configure_usart_callbacks(void)
 
 /**************************************************************************/ 
 /**
- * @fn			void usart_read_callback(struct usart_module *const usart_module)
- * @brief		Callback called when the system finishes receives all the bytes requested from a UART read job
-		 Students to fill out. Please note that the code here is dummy code. It is only used to show you how some functions work.
- * @note
+ * @fn          void usart_read_callback(struct usart_module *const usart_module)
+ * @brief       Callback function triggered when a character is received via UART.
+ * @details     Stores the received character in the circular receive buffer and
+ *              signals the CLI thread that data is available via a semaphore.
+ * @param[in]   usart_module Pointer to the USART module that triggered the callback
  *****************************************************************************/
 void usart_read_callback(struct usart_module *const usart_module)
 {
-	// ToDo: Complete this function 
+	    // Put the latest received character into the circular buffer
+	    circular_buf_put(cbufRx, latestRx);
+
+	    // Give the semaphore to signal that data is available
+	    if (rxDataAvailableSemaphore != NULL)
+	    {
+		    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+		    xSemaphoreGiveFromISR(rxDataAvailableSemaphore, &xHigherPriorityTaskWoken);
+		    
+		    // If a higher priority task was woken, request a context switch
+		    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	    }
+
+	    // Kick off another read job to continuously receive characters
+	    usart_read_buffer_job(&usart_instance, (uint8_t *)&latestRx, 1);
 }
 
 /**************************************************************************/ 
