@@ -28,9 +28,9 @@
 
 | **ID**   | **Requirement**             | **Description**                                                                                                                                         |
 |----------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| SRS 01   | Clothes Detection            | The system shall detect clothes using **infrared sensors**, triggering the folding process within approximately **200 ms** after detection.                          |
+| SRS 01   | Clothes Detection            | The system shall detect clothes using **light sensor**, triggering the folding process within approximately **200 ms** after detection.                          |
 | SRS 02   | Servo Motor Control          | The system shall control **servo motors** using PWM to move the folding arms based on predefined folding actions.                                                  |
-| SRS 03   | Fragrance Activation         | The **solenoid valve/atomization disc** shall be activated for **3 seconds** after folding to release a fragrance mist.                                                   |
+| SRS 03   | Fragrance Activation         | The **atomization disc** shall be activated for **3 seconds** after folding to release a fragrance mist.                                                   |
 | SRS 04   | Control Modes                | The system shall support **Manual** and **Automatic** modes for user interaction. Manual mode allows the user to directly control the system, while automatic mode detects clothes and starts the folding process automatically. |
 | SRS 05   | Wi-Fi Communication          | The system shall allow remote control via **Wi-Fi**, with status updates every **30 seconds** sent to the user's mobile device.                         |
 | SRS 06   | RTOS for Real-Time Operation | The system shall run on an **RTOS**, ensuring **real-time task management** for tasks like motor control, sensor reading, and Wi-Fi communication.       |
@@ -39,8 +39,11 @@
 
 ## 2.  Block diagram outlining the different tasks into which we are dividing the software
 
+![alt text](A07G_Docs/BlockDiag.png)
+
 ## 3.  Flowcharts or state machine diagrams briefly illustrating how each task operates
 
+![alt text](A07G_Docs/Flowchart.png)
 
 # 2. Understanding the Starter Code
 
