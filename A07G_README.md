@@ -16,13 +16,14 @@
 |----------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | HRS 01   | Microcontroller              | The system shall use the **SAMW25 microcontroller**, providing **Wi-Fi connectivity with WINC1500** and processing power to control all tasks.                        |
 | HRS 02   | Servo Motors                 | The system shall use **servo motors** for precise folding arm control, with a range of motion from **0° to 180°**.                                      |
-| HRS 03   | IR Sensors            | The device shall use **IR sensors** for object detection, with a range of **10 cm to 1 meter**.                                       |
+| HRS 03   | IR Sensors            | The device shall use **IR sensors** for object detection, with a range of **10 cm to 1 meter**, to count number of clothes folded.                                       |
 | HRS 04   | Wi-Fi Connectivity           | The device shall have **Wi-Fi connectivity** via the **SAMW25 microcontroller**, enabling remote control and monitoring.                                |
 | HRS 05   | Atomization Disc               | A **atomization disc** shall be used to release fragrance mist after the folding process is completed.                                                    |
 | HRS 06   | Power Supply                 | The system shall be powered by a **rechargeable 3.7V Li-ion battery**, ensuring portability and energy efficiency.                                                   |
 | HRS 07   | OTAFU Support                | The device shall support **Over-the-Air Firmware Updates (OTAFU)** to allow easy remote updates without requiring physical access.                       |
 | HRS 08   | Water Level Sensor           | The system shall include a **water level sensor** to detect the **mist level** inside the fragrance container. The sensor will help determine when the container needs to be refilled. |
 | HRS 09   | Folding Style Modes	         |The system shall provide various folding modes, such as three-fold for shirts, two-fold for t-shirts, and a different fold for pants/jeans.              |
+| HRS 10   | Light Sensor	         |The device shall use **Light sensors** for clothes detection whenn placed on the clothes folding machine.            |
 
 ### Software Requirements Specification (SRS)
 
