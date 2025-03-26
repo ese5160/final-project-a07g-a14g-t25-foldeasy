@@ -3,7 +3,7 @@
 * Team Number: 25
 * Team Name: FOLEASY
 * Team Members: Sanskriti Binani, Chirag Satapathy
-* GitHub Repository URL:
+* GitHub Repository URL: https://github.com/ese5160/final-project-a07g-a14g-t25-foldeasy
 * Description of test hardware: (development boards, sensors, actuators, laptop + OS, etc)
 
 # 1. Software Architecture
